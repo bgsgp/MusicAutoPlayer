@@ -34,7 +34,7 @@
 
 ## 🌐 官网
 
-[https://bggp.dpdns.org/1/map/](https://bggp.dpdns.org/1/map/)
+[https://beggars-group.github.io/MusicAutoPlayer/](https://beggars-group.github.io/MusicAutoPlayer/)
 
 ---
 
