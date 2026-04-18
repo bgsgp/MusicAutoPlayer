@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>自动音乐播放器 | 定时唤醒你的音乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', '微软雅黑', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
+            color: #eef;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            backdrop-filter: blur(2px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #a0e9ff, #6c8eff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .version {
+            background: rgba(108, 142, 255, 0.2);
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(108, 142, 255, 0.4);
+        }
+
+        .badge {
+            margin-top: 1rem;
+        }
+
+        .badge a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+            border-bottom: 1px dotted #6c8eff;
+        }
+
+        .hero {
+            background: rgba(15, 25, 45, 0.6);
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(108, 142, 255, 0.3);
+            backdrop-filter: blur(8px);
+            text-align: center;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #6c8eff;
+            color: #0a0f1e;
+            font-weight: bold;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin: 0 0.5rem;
+            box-shadow: 0 4px 12px rgba(108, 142, 255, 0.3);
+        }
+
+        .btn:hover {
+            background: #8ca4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 142, 255, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #6c8eff;
+            color: #6c8eff;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: rgba(108, 142, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .card {
+            background: rgba(20, 30, 50, 0.5);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(108, 142, 255, 0.2);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            border-color: #6c8eff;
+            background: rgba(30, 40, 65, 0.6);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card p {
+            color: #ccd;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #0a0e1a;
+            padding: 1rem;
+            border-radius: 1rem;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            border-left: 4px solid #6c8eff;
+            margin: 1rem 0;
+        }
+
+        .config-section {
+            background: rgba(10, 14, 26, 0.7);
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin: 2rem 0;
+        }
+
+        .sys-req {
+            background: rgba(255, 100, 100, 0.1);
+            border-left: 4px solid #ff8888;
+            padding: 0.8rem 1rem;
+            border-radius: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(108, 142, 255, 0.2);
+            font-size: 0.85rem;
+            color: #88a;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .btn { padding: 0.6rem 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🎵 自动音乐播放器</h1>
+        <div class="version">Version 2.6.9 | .NET 10 | x64</div>
+        <div class="badge">
+            <a href="#">Windows 10/11</a>
+            <a href="#">开源免费</a>
+            <a href="#">定时唤醒</a>
+        </div>
+    </header>
+
+    <div class="hero">
+        <p>⌛ 精准倒计时，到点自动播放音乐。<br>
+        🖼️ 每个时刻专属背景图，让等待也充满仪式感。</p>
+        <div>
+            <a href="https://github.com/Beggars-Group/MusicAutoPlayer/releases/latest" class="btn">⬇️ 立即下载</a>
+            <a href="https://github.com/Beggars-Group/MusicAutoPlayer" class="btn btn-outline">📂 GitHub 仓库</a>
+        </div>
+        <p style="font-size:0.8rem; margin-top:1rem;">支持 Windows 10 / 11 (64位)，需要 .NET 10 运行时</p>
+    </div>
+
+    <div class="features">
+        <div class="card">
+            <h3>⏰ 多任务定时</h3>
+            <p>支持一天内多个时间点，每个时间点独立配置背景图和颜色。无任务时显示默认界面。</p>
+        </div>
+        <div class="card">
+            <h3>🎨 自由定制</h3>
+            <p>通过 config.json 轻松调整倒计时颜色、背景图，甚至动态切换字体大小。</p>
+        </div>
+        <div class="card">
+            <h3>🧘 极简沉浸</h3>
+            <p>无边框窗口，置顶显示，双击隐藏至托盘。单击托盘图标即可呼出，不打扰工作。</p>
+        </div>
+        <div class="card">
+            <h3>🎶 智能选曲</h3>
+            <p>自动扫描“我的音乐”文件夹，播放最近修改的音频文件，支持几乎所有主流格式。</p>
+        </div>
+    </div>
+
+    <div class="config-section">
+        <h2>📄 配置示例</h2>
+        <p>在程序同目录下创建 <code>config.json</code> 文件：</p>
+        <pre>{
+  "Schedule": "t=09:00,i=bg_morning.jpg,c=#00FF00;t=12:00,i=bg_noon.jpg,c=#FFFF00;t=18:00,i=bg_evening.jpg,c=#FFA500",
+  "TimeColor": "#00FFFF",
+  "NoTaskImage": "bg_default.jpg",
+  "NoTaskTimeColor": "#FF0000"
+}</pre>
+        <p><strong>参数说明：</strong><br>
+        • <code>Schedule</code> — 任务列表，用分号分隔。每个任务格式 <code>t=时间,i=图片路径,c=颜色(可选)</code><br>
+        • <code>TimeColor</code> — 全局倒计时颜色（十六进制）<br>
+        • <code>NoTaskImage</code> — 无任务时的背景图<br>
+        • <code>NoTaskTimeColor</code> — 无任务时倒计时文字颜色</p>
+        <p>💡 背景图支持 jpg / png / bmp，路径相对程序所在目录。</p>
+        
+        <div class="sys-req">
+            ⚙️ <strong>系统要求</strong>：仅支持 <strong>Windows 10 / 11 64位</strong>，需要安装 <a href="https://dotnet.microsoft.com/download/dotnet/10.0" style="color:#6c8eff;">.NET 10 运行时</a>。
+        </div>
+    </div>
+
+    <div class="hero" style="background: rgba(0,0,0,0.4);">
+        <h3 style="margin-bottom: 0.5rem;">🚀 如何使用</h3>
+        <p>1️⃣ 下载并解压程序<br>
+        2️⃣ 编辑 config.json 设置你的日程表<br>
+        3️⃣ 将喜欢的图片放入同一文件夹<br>
+        4️⃣ 运行 MusicAutoPlayer.exe，窗口自动置顶<br>
+        5️⃣ 双击窗口隐藏到托盘，左键单击托盘图标重新显示</p>
+        <p style="margin-top: 1rem;">🎯 到了设定时间，程序会自动打开你的音乐文件夹中最近修改的音频文件。</p>
+    </div>
+
+    <footer>
+        <p>自动音乐播放器 | 开源项目 | 用 ❤️ 和 🎵 唤醒每一天</p>
+        <p>制作单位：丐帮集团第一院·物理版象棋开发与研究院™</p>
+        <p>如果对你有帮助，欢迎给仓库点个 ⭐</p>
+    </footer>
+</div>
+</body>
+</html>

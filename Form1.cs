@@ -180,6 +180,7 @@ namespace MusicAutoPlayer
             }
             catch
             {
+                // 忽略图片加载错误
             }
         }
 
@@ -288,6 +289,7 @@ namespace MusicAutoPlayer
             }
             catch
             {
+                // 忽略播放错误
             }
         }
 
@@ -341,6 +343,7 @@ namespace MusicAutoPlayer
             }
             catch
             {
+                // 忽略配置解析错误
             }
         }
 
