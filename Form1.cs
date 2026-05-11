@@ -16,6 +16,7 @@ namespace MusicAutoPlayer
         public string? TimeColor { get; set; }
         public string? NoTaskImage { get; set; }
         public string? NoTaskTimeColor { get; set; }
+        public bool IncludingVideo { get; set; } = false;   // 新增，默认关闭
     }
 
     public class PlayItem
@@ -39,8 +40,9 @@ namespace MusicAutoPlayer
         private Color _timeColor = Color.Cyan;
         private Color _noTaskTimeColor = Color.Red;
         private string _noTaskImage = string.Empty;
-        private const string AppVersion = "2.6.12";
+        private const string AppVersion = "2.7.1";
         private bool _allowVisible = false;
+        private bool _includingVideo = false;   // 新增
 
         public Form1()
         {
@@ -259,30 +261,36 @@ namespace MusicAutoPlayer
             }
         }
 
-        private static void PlayMusic()
+        // 替换原来的静态方法，改为实例方法，支持视频比对
+        private void PlayMusic()
         {
             try
             {
-                string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-                if (!Directory.Exists(musicPath))
-                    return;
-
-                DirectoryInfo directory = new(musicPath);
-                string[] extensions =
-                [
+                string[] audioExts =
+                {
                     ".mp3", ".wav", ".wma", ".m4a", ".aac", ".flac", ".ape", ".alac", ".aiff", ".aif",
                     ".ogg", ".opus", ".oga", ".mka", ".dsf", ".dff", ".mid", ".midi", ".m4b", ".mp4", ".m4r"
-                ];
+                };
+                string[] videoExts =
+                {
+                    ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg"
+                };
 
-                FileInfo? file = directory.GetFiles("*.*", SearchOption.AllDirectories)
-                    .Where(f => extensions.Contains(f.Extension.ToLower()))
-                    .MaxBy(f => f.LastWriteTime);
+                FileInfo? latestAudio = GetLatestFile(Environment.SpecialFolder.MyMusic, audioExts);
+                FileInfo? latestVideo = null;
 
-                if (file != null)
+                if (_includingVideo)
+                    latestVideo = GetLatestFile(Environment.SpecialFolder.MyVideos, videoExts);
+
+                FileInfo? fileToPlay = latestAudio;
+                if (latestVideo != null && (latestAudio == null || latestVideo.LastWriteTime > latestAudio.LastWriteTime))
+                    fileToPlay = latestVideo;
+
+                if (fileToPlay != null)
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = file.FullName,
+                        FileName = fileToPlay.FullName,
                         UseShellExecute = true
                     });
                 }
@@ -290,6 +298,26 @@ namespace MusicAutoPlayer
             catch
             {
                 // 忽略播放错误
+            }
+        }
+
+        // 辅助方法：在指定特殊文件夹下递归查找最新文件
+        private static FileInfo? GetLatestFile(Environment.SpecialFolder folder, string[] extensions)
+        {
+            try
+            {
+                string path = Environment.GetFolderPath(folder);
+                if (!Directory.Exists(path))
+                    return null;
+
+                DirectoryInfo dir = new(path);
+                return dir.GetFiles("*.*", SearchOption.AllDirectories)
+                          .Where(f => extensions.Contains(f.Extension.ToLower()))
+                          .MaxBy(f => f.LastWriteTime);
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -311,6 +339,7 @@ namespace MusicAutoPlayer
                     _noTaskTimeColor = ColorTranslator.FromHtml(config.NoTaskTimeColor);
 
                 _noTaskImage = config.NoTaskImage ?? "";
+                _includingVideo = config.IncludingVideo;   // 读取视频开关
 
                 if (string.IsNullOrEmpty(config.Schedule))
                     return;

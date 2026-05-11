@@ -1,6 +1,7 @@
 {
-  "Schedule": "t=07:20:00,i=1.png,c=#00FFFF; t=14:20:00,i=2.png,c=#FFB347",
+  "Schedule": "t=07:25:00,i=1.png,c=#00FFFF; t=14:20:00,i=2.png,c=#FFB347",
   "TimeColor": "#00FFFF",
   "NoTaskImage": "3.png",
-  "NoTaskTimeColor": "#8B0000"
+  "NoTaskTimeColor": "#8B0000",
+  "IncludingVideo": false
 }
