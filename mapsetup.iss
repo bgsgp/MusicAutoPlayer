@@ -37,7 +37,7 @@ PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
 
 OutputDir=C:\Users\鸿合HiteVision\OneDrive\桌面
-OutputBaseFilename=MusicAutoPlayer_v2611_Setup
+OutputBaseFilename=MusicAutoPlayer_v272_Setup
 SetupIconFile=C:\Users\鸿合HiteVision\OneDrive\文档\dec.ico
 SolidCompression=yes
 WizardStyle=modern dynamic windows11
@@ -59,7 +59,7 @@ Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\a\{#MyAppExeName}"; DestDir: 
 Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\a\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; 安装字体到系统（源路径已更新）
-Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\font-fangzhengxiangsu12.ttf"; DestDir: "{fonts}"; FontInstall: "方正像素12"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\方正像素12.ttf"; DestDir: "{commonfonts}"; FontInstall: "方正像素12"; Flags: onlyifdoesntexist uninsneveruninstall
 ; 注意：FontInstall 后的字体名称必须与双击字体文件预览时顶部显示的“字体名称”完全一致，此处为示例名称。
 
 [Icons]
