@@ -3,7 +3,7 @@
 ; 仅供非商业使用
 
 #define MyAppName "自动音乐播放器"
-#define MyAppVersion "2.7.2"
+#define MyAppVersion "2.8.1"
 #define MyAppPublisher "丐帮集团第一院·物理版象棋开发与研究院™"
 #define MyAppURL "https://bggp.dpdns.org/1/map/"
 #define MyAppExeName "MusicAutoPlayer.exe"
@@ -37,7 +37,7 @@ PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
 
 OutputDir=C:\Users\鸿合HiteVision\OneDrive\桌面
-OutputBaseFilename=MusicAutoPlayer_v272_Setup
+OutputBaseFilename=MusicAutoPlayer_v281_Setup
 SetupIconFile=C:\Users\鸿合HiteVision\OneDrive\文档\dec.ico
 SolidCompression=yes
 WizardStyle=modern dynamic windows11

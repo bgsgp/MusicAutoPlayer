@@ -40,7 +40,7 @@ namespace MusicAutoPlayer
         private Color _timeColor = Color.Cyan;
         private Color _noTaskTimeColor = Color.Red;
         private string _noTaskImage = string.Empty;
-        private const string AppVersion = "2.7.2";
+        private const string AppVersion = "2.8.1";
         private bool _allowVisible = false;
         private bool _includingVideo = false;   // 新增
 
@@ -268,12 +268,12 @@ namespace MusicAutoPlayer
             {
                 string[] audioExts =
                 {
-                    ".mp3", ".wav", ".wma", ".m4a", ".aac", ".flac", ".ape", ".alac", ".aiff", ".aif",
+                    ".mp3", ".wav", ".wma", ".m4a", ".aac", ".flac", ".ape", ".alac", ".aiff", ".aif", ".m4s",
                     ".ogg", ".opus", ".oga", ".mka", ".dsf", ".dff", ".mid", ".midi", ".m4b", ".mp4", ".m4r"
                 };
                 string[] videoExts =
                 {
-                    ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg"
+                    ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg", ".m4s", ".3gp", ".3g2", ".vob", ".ts", ".mts", ".m2ts", ".rmvb", ".asf"
                 };
 
                 FileInfo? latestAudio = GetLatestFile(Environment.SpecialFolder.MyMusic, audioExts);
