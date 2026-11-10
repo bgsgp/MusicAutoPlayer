@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -21,7 +22,8 @@ namespace MusicAutoPlayer
 
     public class PlayItem
     {
-        public DateTime Time { get; set; }
+        // 只保存“每天的时刻”，具体日期在每次计时时按当天投影，避免跨天失效
+        public TimeSpan TimeOfDay { get; set; }
         public string ImagePath { get; set; } = string.Empty;
         public Color Color { get; set; } = Color.Cyan;
     }
@@ -37,10 +39,11 @@ namespace MusicAutoPlayer
         private NotifyIcon? _trayIcon;
         private ContextMenuStrip? _trayMenu;
         private string _lastPlayedKey = string.Empty;
+        private DateTime _lastTick = DateTime.Now;
         private Color _timeColor = Color.Cyan;
         private Color _noTaskTimeColor = Color.Red;
         private string _noTaskImage = string.Empty;
-        private const string AppVersion = "2.8.1";
+        private const string AppVersion = "2.8.2";
         private bool _allowVisible = false;
         private bool _includingVideo = false;   // 新增
 
@@ -188,40 +191,47 @@ namespace MusicAutoPlayer
 
         private void UpdateLogic()
         {
+            DateTime now = DateTime.Now;
+            DateTime prev = _lastTick;
+            _lastTick = now;
+
             if (_playList.Count == 0 || _lblTime == null)
                 return;
 
-            DateTime now = DateTime.Now;
-            PlayItem? next = (from x in _playList
-                              where x.Time >= now
-                              orderby x.Time
-                              select x).FirstOrDefault();
+            List<TimeSpan> times = _playList.Select(x => x.TimeOfDay).ToList();
 
-            if (next == null)
+            // 播放：补发 (prev, now] 内刚到达的任务。计时器被 UI 阻塞或系统短暂休眠时，
+            // 原来“差值小于 1 秒才播放”的写法会直接漏掉整次任务。
+            DateTime? due = ScheduleMath.LatestDue(times, prev, now, TimeSpan.FromSeconds(5));
+            if (due != null)
             {
-                PlayItem? tomorrow = _playList.MinBy(t => t.Time);
-                if (tomorrow == null)
-                    return;
+                string key = due.Value.ToString("yyyyMMddHHmm");
+                if (_lastPlayedKey != key)
+                {
+                    PlayMusic();
+                    _lastPlayedKey = key;
+                }
+            }
 
-                TimeSpan diff = tomorrow.Time.AddDays(1) - now;
-                _lblTime.Text = $"{(int)diff.TotalHours:D2}:{diff.Minutes:D2}:{diff.Seconds:D2}";
-                _lblTime.ForeColor = _noTaskTimeColor;
+            DateTime? next = ScheduleMath.NextOccurrence(times, now);
+            if (next == null)
+                return;
 
-                if (!string.IsNullOrEmpty(_noTaskImage))
-                    ChangeBackground(_noTaskImage);
+            _lblTime.Text = ScheduleMath.Format(next.Value - now);
+
+            if (next.Value.Date == now.Date)
+            {
+                // 今天还有任务：用任务自己的颜色和背景图
+                PlayItem item = _playList.First(x => x.TimeOfDay == next.Value.TimeOfDay);
+                _lblTime.ForeColor = item.Color;
+                ChangeBackground(item.ImagePath);
             }
             else
             {
-                TimeSpan diff = next.Time - now;
-                _lblTime.Text = $"{(int)diff.TotalHours:D2}:{diff.Minutes:D2}:{diff.Seconds:D2}";
-                _lblTime.ForeColor = next.Color;
-                ChangeBackground(next.ImagePath);
-
-                if (Math.Abs(diff.TotalSeconds) < 1.0 && _lastPlayedKey != next.Time.Ticks.ToString())
-                {
-                    PlayMusic();
-                    _lastPlayedKey = next.Time.Ticks.ToString();
-                }
+                // 今天的任务已全部结束：倒计时到明天最早的一次
+                _lblTime.ForeColor = _noTaskTimeColor;
+                if (!string.IsNullOrEmpty(_noTaskImage))
+                    ChangeBackground(_noTaskImage);
             }
 
             LayoutUI();
@@ -356,6 +366,11 @@ namespace MusicAutoPlayer
                     if (string.IsNullOrEmpty(t))
                         continue;
 
+                    if (!TimeSpan.TryParse(t, CultureInfo.InvariantCulture, out TimeSpan timeOfDay))
+                        continue;
+                    if (timeOfDay < TimeSpan.Zero || timeOfDay >= TimeSpan.FromDays(1))
+                        continue;
+
                     Color col = _timeColor;
                     if (!string.IsNullOrEmpty(c))
                     {
@@ -364,7 +379,7 @@ namespace MusicAutoPlayer
 
                     _playList.Add(new()
                     {
-                        Time = DateTime.Parse($"{DateTime.Now:yyyy-MM-dd} {t}"),
+                        TimeOfDay = timeOfDay,
                         ImagePath = img,
                         Color = col
                     });

@@ -3,7 +3,7 @@
 ; 仅供非商业使用
 
 #define MyAppName "自动音乐播放器"
-#define MyAppVersion "2.8.1"
+#define MyAppVersion "2.8.2"
 #define MyAppPublisher "丐帮集团第一院·物理版象棋开发与研究院™"
 #define MyAppURL "https://bggp.dpdns.org/1/map/"
 #define MyAppExeName "MusicAutoPlayer.exe"
