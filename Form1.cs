@@ -43,7 +43,7 @@ namespace MusicAutoPlayer
         private Color _timeColor = Color.Cyan;
         private Color _noTaskTimeColor = Color.Red;
         private string _noTaskImage = string.Empty;
-        private const string AppVersion = "2.8.2";
+        private const string AppVersion = "2.9.0";
         private bool _allowVisible = false;
         private bool _includingVideo = false;   // 新增
 

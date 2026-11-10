@@ -3,7 +3,7 @@
 ; 仅供非商业使用
 
 #define MyAppName "自动音乐播放器"
-#define MyAppVersion "2.8.2"
+#define MyAppVersion "2.9.0"
 #define MyAppPublisher "丐帮集团第一院·物理版象棋开发与研究院™"
 #define MyAppURL "https://bggp.dpdns.org/1/map/"
 #define MyAppExeName "MusicAutoPlayer.exe"
@@ -37,7 +37,7 @@ PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
 
 OutputDir=C:\Users\鸿合HiteVision\OneDrive\桌面
-OutputBaseFilename=MusicAutoPlayer_v281_Setup
+OutputBaseFilename=MusicAutoPlayer_v290_Setup
 SetupIconFile=C:\Users\鸿合HiteVision\OneDrive\文档\dec.ico
 SolidCompression=yes
 WizardStyle=modern dynamic windows11
@@ -56,7 +56,9 @@ Name: "startup"; Description: "开机时启动（静默）"; GroupDescription: "
 [Files]
 ; 主程序文件
 Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\a\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\a\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\a\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "config.json"
+; 配置文件只在首次安装时写入，升级时保留用户自己的日程
+Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\a\config.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall
 
 ; 安装字体到系统（源路径已更新）
 Source: "C:\Users\鸿合HiteVision\OneDrive\桌面\方正像素12.ttf"; DestDir: "{commonfonts}"; FontInstall: "方正像素12"; Flags: onlyifdoesntexist uninsneveruninstall
